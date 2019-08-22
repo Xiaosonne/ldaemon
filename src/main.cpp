@@ -10,14 +10,14 @@
 
 static bool flag = true;
 void handler(int);
-int fd;
+
 int main(int argc, char *argv[])
 {
     time_t t;
 
     for (size_t i = 0; i < argc; i++)
     {
-        if (strcmp("--daemon",argv[i]) == 0)
+        if (strcmp("--daemon", argv[i]) == 0)
         {
             if (-1 == daemon(0, 0))
             {
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     }
     while (flag)
     {
-        fd = open("daemon.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+        int fd = open("daemon.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
         if (fd == -1)
         {
             printf("open error\n");
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         char *buf = asctime(localtime(&t));
         write(fd, buf, strlen(buf));
         close(fd);
-        sleep(60);
+        sleep(5);
     }
     return 0;
 }
@@ -54,6 +54,11 @@ void handler(int sig)
 {
     printf("I got a signal %d\nI'm quitting.\n", sig);
     char buf[100];
+    int fd = open("daemon.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (fd == -1)
+    {
+        printf("open error\n");
+    }
     sprintf(buf, "I got a signal %d\nI'm quitting.\n", sig);
     write(fd, buf, strlen(buf));
     close(fd);
