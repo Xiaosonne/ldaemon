@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     }
     while (flag)
     {
-        int fd = open("daemon.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+        int fd = open("/tmp/daemon.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
         if (fd == -1)
         {
             printf("open error\n");
@@ -54,7 +54,7 @@ void handler(int sig)
 {
     printf("I got a signal %d\nI'm quitting.\n", sig);
     char buf[100];
-    int fd = open("daemon.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    int fd = open("/tmp/daemon.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd == -1)
     {
         printf("open error\n");
