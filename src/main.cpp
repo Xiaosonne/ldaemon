@@ -11,13 +11,13 @@
 static bool flag = true;
 void handler(int);
 
-int main(int argc, char *argv)
+int main(int argc, char *argv[])
 {
     time_t t;
     int fd;
     for (size_t i = 0; i < argc; i++)
     {
-        if (strcmp(argv[i], "--daemon") == 0)
+        if (strcmp("--daemon",argv[i]) == 0)
         {
             if (-1 == daemon(0, 0))
             {
