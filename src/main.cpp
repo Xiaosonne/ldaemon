@@ -10,11 +10,11 @@
 
 static bool flag = true;
 void handler(int);
-
+int fd;
 int main(int argc, char *argv)
 {
     time_t t;
-    int fd;
+
     for (size_t i = 0; i < argc; i++)
     {
         if (strcmp(argv[i], "--daemon") == 0)
@@ -53,5 +53,9 @@ int main(int argc, char *argv)
 void handler(int sig)
 {
     printf("I got a signal %d\nI'm quitting.\n", sig);
+    char buf[100];
+    sprintf(buf, "I got a signal %d\nI'm quitting.\n", sig);
+    write(fd, buf, strlen(buf));
+    close(fd);
     flag = false;
 }
