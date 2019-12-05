@@ -18,9 +18,15 @@ add_definitions("-O0 -Wall -g -ggdb")
 set(EXECUTABLE_OUTPUT_PATH ${ldaemon_SOURCE_DIR}/bin) 
 
 link_directories(/usr/lib)
-link_directories(/usr/lib64/mysql) 
+#libhdfs.so
+link_directories($ENV{HADOOP_HOME}/lib/native)
+#libjvm.so
+link_directories($ENV{JRE_HOME}/lib/amd64/server)
+# link_directories(/usr/lib64/mysql) 
+include_directories($ENV{HADOOP_HOME}/include)  
+
 include_directories(${ldaemon_SOURCE_DIR}/src) 
 include_directories(${ldaemon_SOURCE_DIR}/include)  
 aux_source_directory(./src source_code)   
 add_executable(ldaemon ${source_code})
-target_link_libraries(ldaemon) 
+target_link_libraries(ldaemon hdfs jvm) 

@@ -7,14 +7,39 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <stdio.h>
+#include "hdfs.h"
 
 static bool flag = true;
 char __log_path__[100];
 void handler(int);
 
-int main(int argc, char *argv[])
-{
-    time_t t;
+
+
+int hdfs_demo(const char* writePath,char* content,int len) {
+	char buff[100];
+	char* ret=NULL;
+    hdfsFS fs = hdfsConnect("127.0.0.1", 9000); 
+    hdfsFile writeFile = hdfsOpenFile(fs, writePath, O_WRONLY | O_CREAT , 0, 0, 0);
+	ret=hdfsGetWorkingDirectory(fs,buff,100);
+	printf("buff %s return %s\n",buff,ret);
+    if(!writeFile) {
+          fprintf(stderr, "Failed to open %s for writing!\n", writePath);
+          exit(-1);
+    }
+    char* buffer = "Hello, World!";
+    tSize num_written_bytes = hdfsWrite(fs, writeFile, (void*)buffer, strlen(buffer)+1);
+	printf("%d writed\n",num_written_bytes);
+    if (hdfsFlush(fs, writeFile)) {
+           fprintf(stderr, "Failed to 'flush' %s\n", writePath);
+          exit(-1);
+    }
+    hdfsCloseFile(fs, writeFile);
+}
+
+
+
+int deamon_demo(int argc, char *argv[]){
+	time_t t;
     getcwd(__log_path__, 100);
     struct sigaction act;
     act.sa_handler = handler;
@@ -73,3 +98,11 @@ void handler(int sig)
     write(fd, buf, strlen(buf));
     close(fd);
 }
+
+int main(int argc, char *argv[])
+{
+    char* content="Hello Hadoop C API!!!";
+	hdfs_demo("/usr1/txt.txt",content,strlen(content));
+	return 0;
+}
+
